@@ -1,0 +1,4 @@
+package: github.com/seryl/antho
+import:
+- package: github.com/blang/semver
+  version: ^3.5.1
