@@ -1,6 +1,6 @@
 # antho
 
-antho is a library and package manager for [jsonnet](http://jsonnet.org/).
+antho (short for anthology) is a library and package manager for [jsonnet](http://jsonnet.org/).
 
 The goal is to provide a way to `package`, `distribute`, and `easily develop` libraries.
 
