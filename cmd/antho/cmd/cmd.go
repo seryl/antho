@@ -2,6 +2,7 @@ package cmd
 
 import (
 	"fmt"
+	"os"
 
 	"github.com/seryl/antho"
 	log "github.com/sirupsen/logrus"
@@ -40,22 +41,31 @@ func Execute() {
 	rootCmd.SetHelpCommand(cmdHelp)
 
 	// Flags List
-
 	rootCmd.Flags().BoolP("debug", "d", false, "enable debug mode")
 	Config.BindPFlag("debug", rootCmd.Flags().Lookup("debug"))
 
 	rootCmd.Flags().StringP("formatter", "f", "text", "the logging formatter to use [text|json]")
 	Config.BindPFlag("formatter", rootCmd.Flags().Lookup("formatter"))
 
+	// Output for CmdPackage
+	wd, err := os.Getwd()
+	if err != nil {
+		Logger.Error(err)
+		return
+	}
+	CmdPackage.Flags().StringP("output", "o", wd, "outputs tarballs to the given path")
+
 	// Command List
-	rootCmd.AddCommand(cmdVersion)
+	rootCmd.AddCommand(CmdPackage)
+	rootCmd.AddCommand(CmdVersion)
 
 	if err := rootCmd.Execute(); err != nil {
 		Logger.Error(err)
 	}
 }
 
-var cmdVersion = &cobra.Command{
+// CmdVersion is the version command.
+var CmdVersion = &cobra.Command{
 	Use:   "version",
 	Short: "print the version",
 	Long:  `print the version`,

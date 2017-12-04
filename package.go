@@ -132,12 +132,14 @@ func (p *Package) Build(w io.Writer) error {
 	tw := tar.NewWriter(w)
 	files, err := p.Files()
 	if err != nil {
+		tw.Close()
 		return err
 	}
 
 	for _, f := range files {
 		fi, err := os.Stat(path.Join(p.Path, f))
 		if err != nil {
+			tw.Close()
 			return err
 		}
 
@@ -147,25 +149,52 @@ func (p *Package) Build(w io.Writer) error {
 			Size: fi.Size(),
 		}
 		if err := tw.WriteHeader(hdr); err != nil {
+			tw.Close()
 			return err
 		}
 
 		absPath, err := p.absPath(f)
 		if err != nil {
+			tw.Close()
 			return err
 		}
 
-		file, err := os.Open(absPath)
+		input, err := os.Open(absPath)
 		if err != nil {
+			tw.Close()
 			return err
 		}
+		defer input.Close()
 
-		if _, err := io.Copy(tw, file); err != nil {
+		if _, err := io.Copy(tw, input); err != nil {
+			tw.Close()
 			return err
 		}
 	}
 
 	return tw.Close()
+}
+
+// TarballName is the name of the tarball package.
+func (p *Package) TarballName() string {
+	return fmt.Sprintf("%s-%s.tar.gz", p.Name, p.Version)
+}
+
+// WriteTarball is a helper to build and write the output to a file.
+func (p *Package) WriteTarball(targetDir string) error {
+	targetFile := path.Join(targetDir, p.TarballName())
+	file, err := os.Create(targetFile)
+	if err != nil {
+		return err
+	}
+
+	err = p.Build(file)
+	if err != nil {
+		file.Close()
+		return err
+	}
+
+	return file.Close()
 }
 
 // Graph returns the dependency tree of packages.

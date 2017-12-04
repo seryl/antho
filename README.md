@@ -6,6 +6,14 @@ The goal is to provide a way to `package`, `distribute`, and `easily develop` li
 
 As convention we use the file `main.libsonnet` as our entry point. Anything that imports a library can assume that file exists.
 
+## Commands
+
+### Package a library
+
+```bash
+antho pack ./path/to/library
+```
+
 ## Building
 
 We rely on two tools for the build process:
@@ -27,6 +35,14 @@ make
 ```
 
 ### Binaries
+
+Create binaries for the current os.
+
+```bash
+make dev
+```
+
+Create all binaries for all platforms.
 
 ```bash
 make bin

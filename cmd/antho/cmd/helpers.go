@@ -42,7 +42,7 @@ type callBackFunc func()
 // When a signal is received, the callbacks are all called in
 // parallel and will wait until whatever cleanup operations have run.
 type TermListener struct {
-	ch chan os.Signal
+	Ch chan os.Signal
 	wg sync.WaitGroup
 
 	Callbacks []callBackFunc
@@ -57,9 +57,9 @@ func (tl *TermListener) AddCallback(f callBackFunc) {
 // WaitForCtrlC will listen for an Interrupt, SIGTERM, or SIGINT
 // before calling all callbacks in parallel and waiting for completion.
 func (tl *TermListener) WaitForCtrlC() {
-	tl.ch = make(chan os.Signal, 2)
-	signal.Notify(tl.ch, os.Interrupt, syscall.SIGTERM, syscall.SIGINT)
-	<-tl.ch
+	tl.Ch = make(chan os.Signal, 2)
+	signal.Notify(tl.Ch, os.Interrupt, syscall.SIGTERM, syscall.SIGINT)
+	<-tl.Ch
 
 	for _, cb := range tl.Callbacks {
 		go func(cb callBackFunc) {
