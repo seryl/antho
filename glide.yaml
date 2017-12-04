@@ -2,3 +2,13 @@ package: github.com/seryl/antho
 import:
 - package: github.com/blang/semver
   version: ^3.5.1
+- package: github.com/google/go-jsonnet
+  version: dfc9428ac71a959909308b3360809997d03e2e1d
+- package: github.com/pkg/errors
+  version: ^0.8.0
+- package: github.com/sirupsen/logrus
+  version: ^1.0.3
+- package: github.com/spf13/cobra
+  version: ^0.0.1
+- package: github.com/spf13/viper
+  version: ^1.0.0
