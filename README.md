@@ -8,6 +8,12 @@ As convention we use the file `main.libsonnet` as our entry point. Anything that
 
 ## Commands
 
+### Print the JSonnet Path
+
+```bash
+antho jpath
+```
+
 ### Package a library
 
 ```bash

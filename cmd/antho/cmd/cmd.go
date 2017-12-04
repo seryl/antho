@@ -57,6 +57,7 @@ func Execute() {
 
 	// Command List
 	rootCmd.AddCommand(CmdPackage)
+	rootCmd.AddCommand(CmdJPath)
 	rootCmd.AddCommand(CmdVersion)
 
 	if err := rootCmd.Execute(); err != nil {
