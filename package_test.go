@@ -73,7 +73,11 @@ func TestJPath(t *testing.T) {
 		t.Error(err)
 	}
 
-	jpath := pkg.JPath()
+	jpath, err := pkg.JPath()
+	if err != nil {
+		t.Error(err)
+	}
+
 	index := sort.SearchStrings(jpath, pkg.Path)
 	if index == len(jpath) {
 		t.Errorf("Unable to find package path in JSonnet Path")
@@ -85,7 +89,11 @@ func TestJPath(t *testing.T) {
 		t.Errorf("Unable to set Jsonnet Path: %s", err)
 	}
 
-	jpath = pkg.JPath()
+	jpath, err = pkg.JPath()
+	if err != nil {
+		t.Error(err)
+	}
+
 	sort.Strings(jpath)
 	index = sort.SearchStrings(jpath, examplePath)
 	if index == len(jpath) {

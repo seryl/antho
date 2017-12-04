@@ -51,9 +51,8 @@ func packageCmd(flags *pflag.FlagSet, pkgPathList []string) int {
 
 		if err != nil {
 			Logger.WithFields(log.Fields{
-				"package": pkg.Name,
-				"path":    p,
-				"error":   err,
+				"path":  p,
+				"error": err,
 			}).Error("error reading package")
 			return 1
 		}

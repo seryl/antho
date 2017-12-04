@@ -205,13 +205,18 @@ func (p *Package) Graph() *Graph {
 // JPath tries to return the jsonnet include path for a given package.
 // This is used for validating a package, running tests,
 // and potentially will/can be used for integrating with editors.
-func (p *Package) JPath() []string {
-	env := []string{p.Path}
+func (p *Package) JPath() ([]string, error) {
+	fpath, err := filepath.Abs(p.Path)
+	if err != nil {
+		return []string{}, err
+	}
+
+	env := []string{fpath}
 	if jPath := os.Getenv(JSonnetPath); jPath != "" {
 		env = append(env, jPath)
 	}
 
-	return env
+	return env, nil
 }
 
 // Validate will check test whether or not a package is ready to be built.
@@ -224,8 +229,13 @@ func (p *Package) Validate() error {
 	}
 
 	vm := jsonnet.MakeVM()
+	jpaths, err := p.JPath()
+	if err != nil {
+		return err
+	}
+
 	vm.Importer(&jsonnet.FileImporter{
-		JPaths: p.JPath(),
+		JPaths: jpaths,
 	})
 
 	_, err = vm.EvaluateSnippet(IndexFile, string(pdata))
