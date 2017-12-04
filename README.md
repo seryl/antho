@@ -11,7 +11,11 @@ As convention we use the file `main.libsonnet` as our entry point. Anything that
 ### Print the JSonnet Path
 
 ```bash
+# Current directory
 antho jpath
+
+# Specific library
+antho jpath LIBRARY
 ```
 
 ### Package a library
