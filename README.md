@@ -11,7 +11,7 @@ As convention we use the file `main.libsonnet` as our entry point. Anything that
 ### Package a library
 
 ```bash
-antho pack ./path/to/library
+antho pack LIBRARY
 ```
 
 ## Building
