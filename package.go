@@ -26,10 +26,11 @@ const PackageFile = "antho.json"
 // IndexFile is the default index file to read for a library.
 const IndexFile = "main.libsonnet"
 
-// ExcludeMatches are the list of file matches to ignore when building a package.
+// ExcludeMatches are the list of file matches to ignore
+// when building a package.
 var ExcludeMatches = []string{
-	"vendor",
-	"vendor/*",
+	CacheDirectory,
+	fmt.Sprintf("%s/*", CacheDirectory),
 }
 
 // FromFile takes a given directory path and attempts to parse the package.
@@ -41,6 +42,36 @@ func FromFile(dpath string) (*Package, error) {
 	}
 
 	return Parse(dpath, pdata)
+}
+
+// IsPackage returns whether or not the given directory looks like a package.
+func IsPackage(dpath string) (bool, error) {
+	pFile := path.Join(dpath, PackageFile)
+	pExists, err := fileExists(pFile)
+	if err != nil {
+		return false, err
+	}
+
+	iFile := path.Join(dpath, IndexFile)
+	iExists, err := fileExists(iFile)
+	if err != nil {
+		return false, err
+	}
+
+	return pExists && iExists, nil
+}
+
+func fileExists(dpath string) (bool, error) {
+	_, err := os.Stat(dpath)
+	if os.IsNotExist(err) {
+		return false, nil
+	}
+
+	if err != nil {
+		return false, err
+	}
+
+	return true, nil
 }
 
 // Parse will take in a given package json and return the go struct.
@@ -75,22 +106,23 @@ func (p *Package) Semver() (semver.Version, error) {
 func (p *Package) Files() ([]string, error) {
 	fileList := []string{}
 
-	err := filepath.Walk(p.Path, func(fpath string, f os.FileInfo, e error) error {
-		excluded, e := p.isExcludedFile(fpath)
-		if e != nil {
-			return e
-		}
-
-		if fpath != p.Path && !excluded {
-			rel, e := p.relPath(fpath)
+	err := filepath.Walk(
+		p.Path, func(fpath string, f os.FileInfo, e error) error {
+			excluded, e := p.isExcludedFile(fpath)
 			if e != nil {
 				return e
 			}
 
-			fileList = append(fileList, rel)
-		}
-		return e
-	})
+			if fpath != p.Path && !excluded {
+				rel, e := p.relPath(fpath)
+				if e != nil {
+					return e
+				}
+
+				fileList = append(fileList, rel)
+			}
+			return e
+		})
 	if err != nil {
 		return []string{}, err
 	}
@@ -111,7 +143,8 @@ func (p *Package) isExcludedFile(filename string) (bool, error) {
 	for _, m := range ExcludeMatches {
 		rel, err := p.relPath(filename)
 		if err != nil {
-			return true, errors.Wrapf(err, "unable to retrieve relPath for `%s`", filename)
+			return true, errors.Wrapf(err,
+				"unable to retrieve relPath for `%s`", filename)
 		}
 
 		matched, err := filepath.Match(m, rel)

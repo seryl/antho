@@ -13,7 +13,7 @@ import (
 )
 
 func TestPackageFailure(t *testing.T) {
-	_, err := fixturePackage("does-not-exist")
+	_, err := fixturePackage("cache/github.com/seryl/does-not-exist-0.0.1")
 	if err == nil {
 		t.Error("Package parsing is not failing with non-existant package")
 	}
@@ -26,7 +26,7 @@ func TestPackageFiles(t *testing.T) {
 	}
 	sort.Strings(expectedContents)
 
-	pkg, err := fixturePackage("example")
+	pkg, err := fixturePackage("cache/github.com/seryl/example-0.0.1")
 	if err != nil {
 		t.Error(err)
 	}
@@ -43,19 +43,19 @@ func TestPackageFiles(t *testing.T) {
 
 	for i := 0; i < len(expectedContents); i++ {
 		if expectedContents[i] != fList[i] {
-			t.Errorf("Package contents do not match. Expected: `%s`, Received: `%s`",
+			t.Errorf("Contents do not match. Expected: `%s`, Received: `%s`",
 				expectedContents[i], fList[i])
 		}
 	}
 
 	if len(fList) != len(expectedContents) {
-		t.Errorf("Package sizes do not match. Expected: `%s`, Received: `%s`",
+		t.Errorf("Sizes do not match. Expected: `%s`, Received: `%s`",
 			expectedContents, fList)
 	}
 }
 
 func TestValidation(t *testing.T) {
-	pkg, err := fixturePackage("example")
+	pkg, err := fixturePackage("cache/github.com/seryl/example-0.0.1")
 	if err != nil {
 		t.Error(err)
 	}
@@ -68,7 +68,7 @@ func TestValidation(t *testing.T) {
 
 func TestJPath(t *testing.T) {
 	examplePath := "/my/example"
-	pkg, err := fixturePackage("example")
+	pkg, err := fixturePackage("cache/github.com/seryl/example-0.0.1")
 	if err != nil {
 		t.Error(err)
 	}
@@ -110,7 +110,7 @@ func TestArchival(t *testing.T) {
 	received := make(map[string]string)
 
 	buf := new(bytes.Buffer)
-	pkg, err := fixturePackage("example")
+	pkg, err := fixturePackage("cache/github.com/seryl/example-0.0.1")
 	if err != nil {
 		t.Error(err)
 	}
