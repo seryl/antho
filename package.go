@@ -90,6 +90,7 @@ func Parse(dpath string, contents []byte) (*Package, error) {
 // Package represents a jsonnet library.
 type Package struct {
 	Name         string    `json:"name"`
+	Origin       string    `json:"origin"`
 	Version      string    `json:"version"`
 	Dependencies []Package `json:"dependencies"`
 
