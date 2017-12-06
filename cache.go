@@ -26,10 +26,16 @@ func GlobalCachePath() (string, error) {
 /*
 Cache is a repository of jsonnet packages and their versions.
 There are a number of repositories we want to support:
+
 	* Github
 	* Bitbucket
 	* Http (Public)
 	* Http (Private)
+
+Directory structure is as follows:
+
+~/${GLOBAL_CACHE_DIR}/${PACKAGE_PATH}/${PKG_NAME}-${VERSION}
+
 */
 type Cache struct {
 	Path string
@@ -88,8 +94,19 @@ func (c *Cache) isChildCache(target string) bool {
 	return false
 }
 
-// LinkedCache is used to symlink items from the global cache
-// to your local package jpath.
+/*
+LinkedCache is used to symlink items from the global cache
+to your local package jpath.
+
+Note: This cache removes the version suffixes and only allows
+single versions of a package to be installed. This is done
+to make behavior for importing work as expected.
+
+Directory structure is as follows:
+
+~/${CACHE_DIR}/${PACKAGE_PATH}/${PKG_NAME}
+*/
 type LinkedCache struct {
-	Path string
+	Path   string
+	Target *Cache
 }
