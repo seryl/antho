@@ -109,15 +109,19 @@ func (p *Package) Files() ([]string, error) {
 
 	err := filepath.Walk(
 		p.Path, func(fpath string, f os.FileInfo, e error) error {
+			if e != nil {
+				return e
+			}
+
 			excluded, e := p.isExcludedFile(fpath)
 			if e != nil {
 				return e
 			}
 
 			if fpath != p.Path && !excluded {
-				rel, e := p.relPath(fpath)
-				if e != nil {
-					return e
+				rel, er := p.relPath(fpath)
+				if er != nil {
+					return er
 				}
 
 				fileList = append(fileList, rel)
@@ -166,14 +170,14 @@ func (p *Package) Build(w io.Writer) error {
 	tw := tar.NewWriter(w)
 	files, err := p.Files()
 	if err != nil {
-		tw.Close()
+		_ = tw.Close()
 		return err
 	}
 
 	for _, f := range files {
 		fi, err := os.Stat(path.Join(p.Path, f))
 		if err != nil {
-			tw.Close()
+			_ = tw.Close()
 			return err
 		}
 
@@ -182,26 +186,26 @@ func (p *Package) Build(w io.Writer) error {
 			Mode: int64(fi.Mode()),
 			Size: fi.Size(),
 		}
-		if err := tw.WriteHeader(hdr); err != nil {
-			tw.Close()
+		if err = tw.WriteHeader(hdr); err != nil {
+			_ = tw.Close()
 			return err
 		}
 
 		absPath, err := p.absPath(f)
 		if err != nil {
-			tw.Close()
+			_ = tw.Close()
 			return err
 		}
 
 		input, err := os.Open(absPath)
 		if err != nil {
-			tw.Close()
+			_ = tw.Close()
 			return err
 		}
-		defer input.Close()
+		defer func() { _ = input.Close() }()
 
 		if _, err := io.Copy(tw, input); err != nil {
-			tw.Close()
+			_ = tw.Close()
 			return err
 		}
 	}
@@ -224,7 +228,7 @@ func (p *Package) WriteTarball(targetDir string) error {
 
 	err = p.Build(file)
 	if err != nil {
-		file.Close()
+		_ = file.Close()
 		return err
 	}
 

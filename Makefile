@@ -1,12 +1,12 @@
 APPNAME=antho
 VERBOSE?=false
-VERSION=$(shell cat version.go | grep 'const VERSION' | awk '{print $$4}' | xargs echo)
+VERSION=$(shell cat version.go | grep 'const Version' | awk '{print $$4}' | xargs echo)
 DATESTAMP=$(date +'%Y%m%d%H%M%S')
 
-TEST?=$(shell go list ./... | grep -v /vendor/ | xargs -L1)
+TEST?=./...
 VETARGS?= -asmdec1 -atomic -bool -buildtags -copylocks -methods -nilfunc -printf -rangeloops -shift -structtags -unsafeptr
 EXTERNAL_TOOLS=\
-	github.com/Masterminds/glide \
+	github.com/golang/dep/cmd/dep \
 	github.com/mitchellh/gox \
 	github.com/golang/lint/golint \
 	golang.org/x/tools/cmd/cover
@@ -58,7 +58,7 @@ cover:
 	./scripts/coverage.sh --html
 
 lint:
-	golint ./...
+	golint $(TEST)
 
 # vet runs the Go source code static analysis tool `vet` to find
 # any common errors.
@@ -74,16 +74,17 @@ vet:
 # generate runs `go generate` to build the dynamically generated
 # source files.
 generate:
-	go generate $(shell glide novendor)
+	@go generate $(TEST)
 
 # bootstrap the build by downloading additional tools
 bootstrap:
 	@for tool in $(EXTERNAL_TOOLS) ; do \
 		echo "Installing $$tool" ; \
 	go get $$tool; \
-		done
+		done ; \
+	dep ensure
 
 clean:
-	@rm -rf pkg/* bin/*
+	@rm -rf build/releases/* bin/*
 
 .PHONY: bin default generate test vet bootstrap

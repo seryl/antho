@@ -104,7 +104,7 @@ func TestJPath(t *testing.T) {
 
 func TestArchival(t *testing.T) {
 	expected := map[string]string{
-		"antho.json":     "a5066f743ea70d60b692ceea51cf8b16a77d1b1c",
+		"antho.json":     "f66739541f86ddad385a31af0477427f10f9eb38",
 		"main.libsonnet": "0b56d40c0630a74abec5398e01c6cd83263feddc",
 	}
 	received := make(map[string]string)

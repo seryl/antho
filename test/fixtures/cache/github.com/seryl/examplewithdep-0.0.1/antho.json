@@ -1,5 +1,5 @@
 {
-  "name": "exampledep",
+  "name": "examplewithdep",
   "origin": "github.com/seryl",
   "version": "0.0.1",
   "dependencies": [

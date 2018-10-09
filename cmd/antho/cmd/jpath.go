@@ -7,7 +7,7 @@ import (
 	"path/filepath"
 	"strings"
 
-	"github.com/seryl/antho"
+	"github.com/seryl/antho/pkg"
 	log "github.com/sirupsen/logrus"
 	"github.com/spf13/cobra"
 )

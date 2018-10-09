@@ -1,8 +1,7 @@
 data
 /bin
-/pkg
+/build/releases
 /vendor
 /.cover/*
 *.test
 /.test_data/*
-glide.lock

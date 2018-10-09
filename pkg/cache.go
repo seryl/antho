@@ -52,6 +52,10 @@ func (c *Cache) Packages() (map[string]map[string]*Package, error) {
 
 	err := filepath.Walk(
 		c.Path, func(fpath string, f os.FileInfo, e error) error {
+			if e != nil {
+				return e
+			}
+
 			if f.IsDir() {
 				isPkg, err := IsPackage(fpath)
 				if err != nil {

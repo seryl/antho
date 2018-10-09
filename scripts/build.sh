@@ -8,6 +8,8 @@ SOURCE="${BASH_SOURCE[0]}"
 while [ -h "$SOURCE" ] ; do SOURCE="$(readlink "$SOURCE")"; done
 DIR="$( cd -P "$( dirname "$SOURCE" )/.." && pwd )"
 
+OUTPUT='build/releases'
+
 # Change into that directory
 cd "$DIR"
 
@@ -30,7 +32,7 @@ esac
 # Delete the old dir
 echo "==> Removing old directory..."
 rm -f bin/*
-rm -rf pkg/*
+rm -rf $OUTPUT/*
 mkdir -p bin/
 
 # Disable CGO -- allows docker static/standalone deployments
@@ -56,7 +58,7 @@ echo "==> Building..."
     -os="!openbsd" \
     -osarch="!darwin/arm" \
     -arch="${XC_ARCH}" \
-    -output "pkg/{{.OS}}_{{.Arch}}/antho" \
+    -output "$OUTPUT/{{.OS}}_{{.Arch}}/antho" \
     ./cmd/...
 
 

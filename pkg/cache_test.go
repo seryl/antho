@@ -20,7 +20,7 @@ func TestPackageMap(t *testing.T) {
 			version: "0.0.1",
 		},
 		{
-			name:    "exampledep",
+			name:    "examplewithdep",
 			origin:  "github.com/seryl",
 			version: "0.0.1",
 		},
@@ -42,7 +42,7 @@ func TestPackageMap(t *testing.T) {
 		}
 
 		if pkgs[pkgPath][pkg.version] == nil {
-			t.Errorf("Package version exist: `%s`, `%s`", pkgPath, pkg.version)
+			t.Errorf("Package version does not exist: `%s`, `%s`", pkgPath, pkg.version)
 		}
 
 		p := pkgs[pkgPath][pkg.version]

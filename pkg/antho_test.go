@@ -8,7 +8,7 @@ import (
 var fixturesDirectory string
 
 func init() {
-	fixturesDirectory = path.Join(path.Dir(currentFile()), "fixtures")
+	fixturesDirectory = path.Join(path.Dir(currentFile()), "..", "test", "fixtures")
 }
 
 func currentFile() string {
